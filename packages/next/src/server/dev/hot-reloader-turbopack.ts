@@ -95,7 +95,8 @@ const sessionId = Math.floor(Number.MAX_SAFE_INTEGER * Math.random())
 export async function createHotReloaderTurbopack(
   opts: SetupOpts,
   serverFields: ServerFields,
-  distDir: string
+  distDir: string,
+  resetFetch: () => void
 ): Promise<NextJsHotReloaderInterface> {
   const buildId = 'development'
   const { nextConfig, dir } = opts
@@ -238,6 +239,8 @@ export async function createHotReloaderTurbopack(
         return
       }
     }
+
+    resetFetch()
 
     const hasAppPaths = writtenEndpoint.serverPaths.some(({ path: p }) =>
       p.startsWith('server/app')
