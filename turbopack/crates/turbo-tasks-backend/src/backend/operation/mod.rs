@@ -262,6 +262,20 @@ pub enum AnyOperation {
     Nested(Vec<AnyOperation>),
 }
 
+impl AnyOperation {
+    pub fn execute(self, ctx: &ExecuteContext<'_>) {
+        match self {
+            AnyOperation::ConnectChild(op) => op.execute(ctx),
+            AnyOperation::Invalidate(op) => op.execute(ctx),
+            AnyOperation::Nested(ops) => {
+                for op in ops {
+                    op.execute(ctx);
+                }
+            }
+        }
+    }
+}
+
 impl_operation!(ConnectChild connect_child::ConnectChildOperation);
 impl_operation!(Invalidate invalidate::InvalidateOperation);
 
